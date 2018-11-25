@@ -60,7 +60,7 @@ FOREND:
 			fmt.Println("请输入不多于9个字符，以回车结束：")
 			data, err = readFrom(os.Stdin, 11)
 		case "2":
-			file, err := os.Open("basic/io/01.txt")
+			file, err := os.Open("io/01.txt")
 			if err != nil {
 				fmt.Println("打开文件 01.txt 错误:", err)
 				continue

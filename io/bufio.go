@@ -29,7 +29,7 @@ func readBytes() {
 }
 
 func scanner() {
-	file, err := os.Create("basic/io/scanner.txt")
+	file, err := os.Create("io/scanner.txt")
 	if err != nil {
 		panic(file)
 	}

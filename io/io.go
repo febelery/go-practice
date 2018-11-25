@@ -21,7 +21,7 @@ func readerAt() {
 }
 
 func writeAt() {
-	file, err := os.Create("basic/io/writeAt.txt")
+	file, err := os.Create("io/writeAt.txt")
 	if err != nil {
 		panic(err)
 	}
@@ -36,7 +36,7 @@ func writeAt() {
 }
 
 func readerFrom() {
-	file, err := os.Open("basic/io/writeAt.txt")
+	file, err := os.Open("io/writeAt.txt")
 	if err != nil {
 		panic(err)
 	}
@@ -92,7 +92,7 @@ func multiReader() {
 }
 
 func multiWriter() {
-	file, err := os.Create("basic/io/tmp.txt")
+	file, err := os.Create("io/tmp.txt")
 	if err != nil {
 		panic(err)
 	}
