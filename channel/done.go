@@ -17,7 +17,7 @@ func doWork(id int, w worker3) {
 	}
 }
 
-func createWroker(id int, wg *sync.WaitGroup) worker3 {
+func createWorker3(id int, wg *sync.WaitGroup) worker3 {
 	w := worker3{
 		in: make(chan int),
 		done: func() {
@@ -33,7 +33,7 @@ func main() {
 
 	var workers [10]worker3
 	for i := 0; i < 10; i++ {
-		workers[i] = createWroker(i, &wg)
+		workers[i] = createWorker3(i, &wg)
 	}
 
 	wg.Add(20)
