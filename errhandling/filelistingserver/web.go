@@ -1,7 +1,7 @@
 package main
 
 import (
-	"learn/errhanding/filelistingserver/filelisting"
+	"learn/errhandling/filelistingserver/filelisting"
 	"log"
 	"net/http"
 	"os"

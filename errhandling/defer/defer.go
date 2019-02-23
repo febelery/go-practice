@@ -42,5 +42,5 @@ func writeFile(filename string) {
 
 func main() {
 	tryDefer()
-	writeFile("errhanding/defer/fib.txt")
+	writeFile("errhandling/defer/fib.txt")
 }
