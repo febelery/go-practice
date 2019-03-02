@@ -7,7 +7,7 @@ import (
 	"strconv"
 )
 
-var profileRe = regexp.MustCompile(`<div class="des f-cl" data-v-3c42fade>([^\|]{1,3}) \| ([\d]{1,3})岁 \| ([^\|]{1,3}) \| ([^\|]{1,3}) \| ([\d]{2,3})cm \| ([^<]{1,14})元</div>`)
+var profileRe = regexp.MustCompile(`<div class="des f-cl" data-v-3c42fade>([^\|]{1,10}) \| ([\d]{1,3})岁 \| ([^\|]{1,10}) \| ([^\|]{1,10}) \| ([\d]{2,3})cm \| ([^<]{1,14})</div>`)
 
 func ParserProfile(contents []byte, name string) engine.ParserResult {
 	profile := model.Profile{}
