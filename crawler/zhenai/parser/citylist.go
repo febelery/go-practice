@@ -12,7 +12,7 @@ func ParserCityList(contents []byte) engine.ParserResult {
 	matches := re.FindAllSubmatch(contents, -1)
 
 	result := engine.ParserResult{}
-	limit := 10
+	limit := 3
 
 	for _, m := range matches {
 		result.Items = append(result.Items, string(m[2]))

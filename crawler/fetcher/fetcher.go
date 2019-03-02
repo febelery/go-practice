@@ -13,7 +13,15 @@ import (
 )
 
 func Fetcher(url string) ([]byte, error) {
-	resp, err := http.Get(url)
+	client := &http.Client{}
+	request, err := http.NewRequest("GET", url, nil)
+
+	request.Header.Add("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
+	request.Header.Add("Accept-Language", "ja,zh-CN;q=0.8,zh;q=0.6")
+	request.Header.Add("Connection", "keep-alive")
+	request.Header.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36")
+
+	resp, err := client.Do(request)
 
 	if err != nil {
 		return nil, err
