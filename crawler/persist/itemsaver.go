@@ -1,14 +1,19 @@
 package persist
 
 import (
-	"context"
-	"fmt"
+	"github.com/pkg/errors"
 	"gopkg.in/olivere/elastic.v6"
+	"learn/crawler/engine"
 	"log"
 )
 
-func ItemSaver() chan interface{} {
-	out := make(chan interface{})
+func ItemSaver(index string) (chan engine.Item, error) {
+	out := make(chan engine.Item)
+	client, err := elastic.NewClient(elastic.SetSniff(false))
+	if err != nil {
+		return nil, err
+	}
+
 	go func() {
 		itemCount := 0
 		for {
@@ -16,24 +21,32 @@ func ItemSaver() chan interface{} {
 			itemCount++
 			log.Printf("Item Saver: got item #%d: %v", itemCount, item)
 
-			save(item)
+			err := save(client, item, index)
+			if err != nil {
+				log.Printf("Item saver: error saving item %v: %v", item, err)
+			}
 		}
 	}()
-	return out
+	return out, nil
 }
 
-func save(item interface{}) (id string, err error) {
-	client, err := elastic.NewClient(elastic.SetSniff(false))
-	if err != nil {
-		return "", err
+func save(client *elastic.Client, item engine.Item, index string) error {
+	if item.Type == "" {
+		return errors.New("must supply Type")
 	}
 
-	resp, err := client.Index().Index("dating_profile").Type("zhenai").BodyJson(item).Do(context.Background())
-	if err != nil {
-		return "", err
+	indexService := client.Index().
+		Index(index).
+		Type(item.Type).
+		BodyJson(item)
+	if item.Id != "" {
+		indexService.Id(item.Id)
 	}
 
-	fmt.Printf("%+v", resp)
+	//_, err := indexService.Do(context.Background())
+	//if err != nil {
+	//	return err
+	//}
 
-	return resp.Id, nil
+	return nil
 }

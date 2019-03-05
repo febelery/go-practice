@@ -1,11 +1,9 @@
 package engine
 
-import "fmt"
-
 type ConcurrentEngine struct {
 	Scheduler   Scheduler
 	WorkerCount int
-	ItemChan    chan interface{}
+	ItemChan    chan Item
 }
 
 type Scheduler interface {
@@ -62,22 +60,13 @@ func createWorker(in chan Request, out chan ParserResult, notifier ReadyNotifier
 	}()
 }
 
-var norepeatUrl []string
+var visitedUrls = make(map[string]bool)
 
 func isDuplicate(url string) bool {
-	result := false
-	for _, curUrl := range norepeatUrl {
-		if string(url) == string(curUrl) {
-			result = true
-			break
-		}
+	if visitedUrls[url] {
+		return true
 	}
 
-	if !result {
-		norepeatUrl = append(norepeatUrl, url)
-	}
-	if len(norepeatUrl)%5000 == 0 {
-		fmt.Println("hellos", len(norepeatUrl))
-	}
-	return result
+	visitedUrls[url] = true
+	return false
 }
