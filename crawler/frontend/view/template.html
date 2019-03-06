@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>show result</title>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+</head>
+<body>
+
+<div class="container">
+    <form action="/search" method="get">
+        <div class="row">
+            <div class="input-field col s10">
+                <input type="text" name="q" value="{{.Query}}">
+            </div>
+            <div class="input-field col s2">
+                <button class="waves-effect waves-light btn" type="submit">搜索</button>
+            </div>
+        </div>
+    </form>
+    <h2>共为你找到结果约为{{.Hits}}。显示从{{.Start}}起共{{len .Items}}个。</h2>
+
+    <table>
+        <tbody>
+        {{range .Items}}
+            <tr>
+                <td><a href="{{.Url}}">{{.Payload.Name}}</a></td>
+                {{with .Payload}}
+                    <td>{{.Gender}}</td>
+                    <td>{{.Age}}</td>
+                    <td>{{.Height}}cm</td>
+                    <td>{{.Weight}}kg</td>
+                    <td>{{.Income}}</td>
+                    <td>{{.Education}}</td>
+                    <td>{{.Occupation}}</td>
+                {{end}}
+            </tr>
+        {{else}}
+            <div>没有找到用户</div>
+        {{end}}
+        </tbody>
+    </table>
+
+    {{if ge .PrevFrom 0}}
+        <a href="search?q={{.Query}}&from={{.PrevFrom}}">上一页</a>
+    {{end}}
+    <a href="search?q={{.Query}}&from={{.NextFrom}}">下一页</a>
+</div>
+</body>
+</html>
