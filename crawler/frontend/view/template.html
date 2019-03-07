@@ -24,15 +24,19 @@
         <tbody>
         {{range .Items}}
             <tr>
-                <td><a href="{{.Url}}">{{.Payload.Name}}</a></td>
+                <td><a href="{{.Url}}" target="_blank">{{.Payload.Name}}</a></td>
                 {{with .Payload}}
                     <td>{{.Gender}}</td>
-                    <td>{{.Age}}</td>
+                    <td>{{.Age}}岁</td>
                     <td>{{.Height}}cm</td>
-                    <td>{{.Weight}}kg</td>
                     <td>{{.Income}}</td>
                     <td>{{.Education}}</td>
-                    <td>{{.Occupation}}</td>
+                    <td>{{.Marriage}}</td>
+                    <td>{{.Birthplace}}</td>
+                    <td>{{.Hokou}}</td>
+                    <td>{{.Shape}}</td>
+                    <td>{{.House}}</td>
+                    <td>{{.Car}}</td>
                 {{end}}
             </tr>
         {{else}}

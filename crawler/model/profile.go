@@ -11,9 +11,9 @@ type Profile struct {
 	Income     string
 	Marriage   string
 	Education  string
-	Occupation string
+	Birthplace string
 	Hokou      string
-	Xinzou     string
+	Shape      string
 	House      string
 	Car        string
 }

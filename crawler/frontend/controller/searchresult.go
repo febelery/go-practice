@@ -62,8 +62,14 @@ func (h SearchResultHandler) getSearchResult(q string, from int) (model.SearchRe
 	result.Start = from
 	result.Items = resp.Each(reflect.TypeOf(engine.Item{}))
 	result.Start = from
-	result.PrevFrom = result.Start - len(result.Items)
-	result.NextFrom = result.Start + len(result.Items)
+
+	pagelen := len(result.Items)
+	if pagelen == 0 {
+		pagelen = 10
+	}
+
+	result.PrevFrom = result.Start - pagelen
+	result.NextFrom = result.Start + pagelen
 
 	return result, nil
 }
