@@ -18,7 +18,7 @@ var shapeRe = regexp.MustCompile(`<div class="m-btn pink" data-v-[^>]+>体型:([
 var maleRe = regexp.MustCompile(`分享他`)
 var femaleRe = regexp.MustCompile(`分享她`)
 
-func ParserProfile(contents []byte, url string, name string) engine.ParserResult {
+func parseProfile(contents []byte, url string, name string) engine.ParserResult {
 	profile := model.Profile{}
 	profile.Name = name
 
@@ -30,25 +30,11 @@ func ParserProfile(contents []byte, url string, name string) engine.ParserResult
 		profile.Gender = "女"
 	}
 
-	if hokou := hokouRe.FindSubmatch(contents); len(hokou) >= 2 {
-		profile.Hokou = string(hokou[1])
-	}
-
-	if car := carRe.FindSubmatch(contents); len(car) >= 2 {
-		profile.Car = string(car[1])
-	}
-
-	if house := houseRe.FindSubmatch(contents); len(house) >= 2 {
-		profile.House = string(house[1])
-	}
-
-	if birthplace := birthplaceRe.FindSubmatch(contents); len(birthplace) >= 2 {
-		profile.Birthplace = string(birthplace[1])
-	}
-
-	if shape := shapeRe.FindSubmatch(contents); len(shape) >= 2 {
-		profile.Shape = string(shape[1])
-	}
+	profile.Hokou = extractString(contents, hokouRe)
+	profile.Car = extractString(contents, carRe)
+	profile.House = extractString(contents, houseRe)
+	profile.Birthplace = extractString(contents, birthplaceRe)
+	profile.Shape = extractString(contents, shapeRe)
 
 	match := profileRe.FindSubmatch(contents)
 	if len(match) >= 2 {
@@ -76,5 +62,41 @@ func ParserProfile(contents []byte, url string, name string) engine.ParserResult
 		},
 	}
 
+	//matches := guessRe.FindAllSubmatch(contents, -1)
+	//for _, m := range matches {
+	//	result.Requests = append(result.Requests, engine.Request{
+	//		Url:    string(m[1]),
+	//		Parser: NewProfileParser(string(m[2])),
+	//	})
+	//}
+
 	return result
+}
+
+func extractString(contents []byte, re *regexp.Regexp) string {
+	match := re.FindSubmatch(contents)
+
+	if len(match) >= 2 {
+		return string(match[1])
+	} else {
+		return ""
+	}
+}
+
+type ProfileParser struct {
+	userName string
+}
+
+func (p *ProfileParser) Parse(contents []byte, url string) engine.ParserResult {
+	return parseProfile(contents, url, p.userName)
+}
+
+func (p *ProfileParser) Serialize() (name string, args interface{}) {
+	return "ProfileParser", p.userName
+}
+
+func NewProfileParser(name string) *ProfileParser {
+	return &ProfileParser{
+		userName: name,
+	}
 }
