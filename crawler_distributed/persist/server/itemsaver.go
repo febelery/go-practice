@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"gopkg.in/olivere/elastic.v6"
 	"learn/crawler_distributed/config"
@@ -9,8 +10,15 @@ import (
 	"log"
 )
 
+var port = flag.Int("port", 1234, "the port for me to listen on")
+
 func main() {
-	err := serveRpc(fmt.Sprintf(":%d", config.ItemSaverPort), config.ElasticIndex)
+	flag.Parse()
+	if *port == 0 {
+		fmt.Println("must specify a port")
+		return
+	}
+	err := serveRpc(fmt.Sprintf(":%d", *port), config.ElasticIndex)
 	log.Fatal(err)
 }
 

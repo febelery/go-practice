@@ -8,16 +8,18 @@ import (
 	"golang.org/x/text/encoding/unicode"
 	"golang.org/x/text/transform"
 	"io/ioutil"
+	"learn/crawler_distributed/config"
 	"log"
 	"net/http"
 	"time"
 )
 
-var rateLimiter = time.Tick(10 * time.Millisecond)
+var rateLimiter = time.Tick(time.Second / config.Qps)
 
 func Fetcher(url string) ([]byte, error) {
 	// 速率限制
 	<-rateLimiter
+	log.Printf("Fetching url %s", url)
 
 	client := &http.Client{}
 	request, err := http.NewRequest("GET", url, nil)
