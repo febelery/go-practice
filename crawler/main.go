@@ -5,6 +5,7 @@ import (
 	"learn/crawler/persist"
 	"learn/crawler/scheduler"
 	"learn/crawler/zhenai/parser"
+	"learn/crawler_distributed/config"
 )
 
 func main() {
@@ -14,13 +15,14 @@ func main() {
 	}
 
 	e := engine.ConcurrentEngine{
-		Scheduler:   &scheduler.QueuedScheduler{},
-		WorkerCount: 100,
-		ItemChan:    itemChan,
+		Scheduler:        &scheduler.QueuedScheduler{},
+		WorkerCount:      100,
+		ItemChan:         itemChan,
+		RequestProcessor: engine.Worker,
 	}
 
 	e.Run(engine.Request{
 		Url:    "http://www.zhenai.com/zhenghun",
-		Parser: engine.NewFuncParser(parser.ParseCityList, "ParseCityList"),
+		Parser: engine.NewFuncParser(parser.ParseCityList, config.ParseCityList),
 	})
 }
