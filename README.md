@@ -47,3 +47,8 @@ CTRL+O，实现接口的所有方法<br>
 ALT+1，打开/关闭Project窗口<br>
 ALT+2，打开/关闭Favorites窗口<br>
 ALT+7，打开文件方法列表<br>
+
+## command
+```bash
+go run crawler_distributed/main.go --itemsaver_host=":1234" --worker_hosts=":9000,:9001"
+```
