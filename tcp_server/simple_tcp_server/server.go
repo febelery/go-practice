@@ -47,6 +47,17 @@ func main() {
 	}
 }
 
+func handleConn(conn net.Conn) {
+	for {
+		reader := bufio.NewReader(conn)
+		line, _ := reader.ReadBytes('\n')
+		if len(line) > 0 {
+			log.Printf("server recieve data: %s \n", strings.TrimSpace(string(line)))
+		}
+	}
+	//io.Copy(ioutil.Discard, conn)
+}
+
 func setLimit() {
 	var rLimit syscall.Rlimit
 	if err := syscall.Getrlimit(syscall.RLIMIT_NOFILE, &rLimit); err != nil {
@@ -60,15 +71,4 @@ func setLimit() {
 	}
 
 	log.Printf("set cur limit: %d", rLimit.Cur)
-}
-
-func handleConn(conn net.Conn) {
-	for {
-		reader := bufio.NewReader(conn)
-		line, _ := reader.ReadBytes('\n')
-		if len(line) > 0 {
-			log.Printf("server recieve data: %s \n", strings.TrimSpace(string(line)))
-		}
-	}
-	//io.Copy(ioutil.Discard, conn)
 }
