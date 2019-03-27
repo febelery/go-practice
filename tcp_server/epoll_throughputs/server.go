@@ -74,6 +74,7 @@ func start() {
 
 			// 将消息(时间戳)原封不动的写回
 			_, err = io.CopyN(conn, conn, 8)
+
 			if err != nil {
 				if err := epoller.Remove(conn); err != nil {
 					log.Printf("failed to remove %v", err)

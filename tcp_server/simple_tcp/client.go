@@ -3,22 +3,21 @@ package main
 import (
 	"flag"
 	"fmt"
+	"learn/tcp_server/common"
 	"log"
 	"net"
-	"syscall"
 	"time"
 )
 
 var (
-	ip          = flag.String("ip", "localhost", "server IP")
-	connections = flag.Int("conn", 1, "number of tcp connections")
-	startMetric = flag.String("sm", time.Now().Format("2019-03-25T15:04:05 +0800"), "start time point of all clients")
+	ip          = flag.String("ip", "127.0.0.1", "server IP")
+	connections = flag.Int("conn", 100, "number of tcp connections")
 )
 
 func main() {
 	flag.Parse()
 
-	setLimit()
+	common.SetLimit()
 
 	addr := *ip + ":8972"
 	log.Printf("连接到 %s", addr)
@@ -56,19 +55,4 @@ func main() {
 			conn.Write([]byte(fmt.Sprintf("Client: %d. Message: Hello World\r\n", i)))
 		}
 	}
-}
-
-func setLimit() {
-	var rLimit syscall.Rlimit
-	if err := syscall.Getrlimit(syscall.RLIMIT_NOFILE, &rLimit); err != nil {
-		panic(err)
-	}
-
-	rLimit.Cur = rLimit.Max
-
-	if err := syscall.Setrlimit(syscall.RLIMIT_NOFILE, &rLimit); err != nil {
-		panic(err)
-	}
-
-	log.Printf("set cur limit: %d", rLimit.Cur)
 }

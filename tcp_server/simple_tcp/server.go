@@ -1,12 +1,10 @@
 package main
 
 import (
-	"bufio"
 	"learn/tcp_server/common"
 	"log"
 	"net"
 	"net/http"
-	"strings"
 )
 
 func main() {
@@ -48,12 +46,6 @@ func main() {
 }
 
 func handleConn(conn net.Conn) {
-	for {
-		reader := bufio.NewReader(conn)
-		line, _ := reader.ReadBytes('\n')
-		if len(line) > 0 {
-			log.Printf("server recieve data: %s \n", strings.TrimSpace(string(line)))
-		}
-	}
+	common.ReadData(conn)
 	//io.Copy(ioutil.Discard, conn)
 }

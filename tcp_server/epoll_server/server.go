@@ -1,12 +1,10 @@
 package main
 
 import (
-	"bufio"
 	"learn/tcp_server/common"
 	"log"
 	"net"
 	"net/http"
-	"strings"
 )
 
 var epoller *common.Epoll
@@ -71,11 +69,7 @@ func start() {
 				conn.Close()
 			}
 
-			reader := bufio.NewReader(conn)
-			line, _ := reader.ReadBytes('\n')
-			if len(line) > 0 {
-				log.Printf("simple epoll server recieve data: %s \n", strings.TrimSpace(string(line)))
-			}
+			common.ReadData(conn)
 		}
 	}
 }

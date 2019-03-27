@@ -1,7 +1,10 @@
 package common
 
 import (
+	"bufio"
 	"log"
+	"net"
+	"strings"
 	"syscall"
 )
 
@@ -16,4 +19,13 @@ func SetLimit() {
 	}
 
 	log.Printf("set cur limit: %d", rLimit.Cur)
+}
+
+func ReadData(conn net.Conn) {
+	reader := bufio.NewReader(conn)
+
+	line, _, _ := reader.ReadLine()
+	if len(line) > 0 {
+		log.Printf("server recieve data: %s \n", strings.TrimSpace(string(line)))
+	}
 }
