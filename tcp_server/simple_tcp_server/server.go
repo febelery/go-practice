@@ -2,15 +2,15 @@ package main
 
 import (
 	"bufio"
+	"learn/tcp_server/common"
 	"log"
 	"net"
 	"net/http"
 	"strings"
-	"syscall"
 )
 
 func main() {
-	setLimit()
+	common.SetLimit()
 
 	ln, e := net.Listen("tcp", ":8972")
 	if e != nil {
@@ -56,19 +56,4 @@ func handleConn(conn net.Conn) {
 		}
 	}
 	//io.Copy(ioutil.Discard, conn)
-}
-
-func setLimit() {
-	var rLimit syscall.Rlimit
-	if err := syscall.Getrlimit(syscall.RLIMIT_NOFILE, &rLimit); err != nil {
-		panic(err)
-	}
-
-	rLimit.Cur = rLimit.Max
-
-	if err := syscall.Setrlimit(syscall.RLIMIT_NOFILE, &rLimit); err != nil {
-		panic(err)
-	}
-
-	log.Printf("set cur limit: %d", rLimit.Cur)
 }

@@ -1,4 +1,4 @@
-package main
+package common
 
 import (
 	"golang.org/x/sys/unix"
@@ -9,28 +9,31 @@ import (
 	"syscall"
 )
 
-type epoll struct {
+type Epoll struct {
 	fd          int
 	connections map[int]net.Conn
 	lock        *sync.RWMutex
 }
 
-func MkEpoll() (*epoll, error) {
+func MkEpoll() (*Epoll, error) {
 	fd, err := unix.EpollCreate1(0)
 	if err != nil {
 		return nil, err
 	}
 
-	return &epoll{
+	return &Epoll{
 		fd:          fd,
-		lock:        &sync.RWMutex{},
 		connections: make(map[int]net.Conn),
+		lock:        &sync.RWMutex{},
 	}, nil
 }
 
-func (e *epoll) Add(conn net.Conn) error {
+func (e *Epoll) Add(conn net.Conn) error {
 	fd := socketFD(conn)
-	err := unix.EpollCtl(e.fd, syscall.EPOLL_CTL_ADD, fd, &unix.EpollEvent{Events: unix.POLLIN | unix.POLLHUP, Fd: int32(fd)})
+	err := unix.EpollCtl(e.fd, syscall.EPOLL_CTL_ADD, fd, &unix.EpollEvent{
+		Events: unix.POLLIN | unix.POLLHUP,
+		Fd:     int32(fd),
+	})
 	if err != nil {
 		return err
 	}
@@ -40,12 +43,13 @@ func (e *epoll) Add(conn net.Conn) error {
 
 	e.connections[fd] = conn
 	if len(e.connections)%100 == 0 {
-		log.Printf("total number of connections: %v \n", len(e.connections))
+		log.Printf("total number of connections: %v", len(e.connections))
 	}
+
 	return nil
 }
 
-func (e *epoll) Remove(conn net.Conn) error {
+func (e *Epoll) Remove(conn net.Conn) error {
 	fd := socketFD(conn)
 	err := unix.EpollCtl(e.fd, syscall.EPOLL_CTL_DEL, fd, nil)
 	if err != nil {
@@ -57,27 +61,26 @@ func (e *epoll) Remove(conn net.Conn) error {
 
 	delete(e.connections, fd)
 	if len(e.connections)%100 == 0 {
-		log.Printf("total number of connections: %v \n", len(e.connections))
+		log.Printf("total number of connections: %v", len(e.connections))
 	}
 	return nil
 }
 
-func (e *epoll) Wait() ([]net.Conn, error) {
+func (e *Epoll) Wait() ([]net.Conn, error) {
 	events := make([]unix.EpollEvent, 100)
 	n, err := unix.EpollWait(e.fd, events, 100)
 	if err != nil {
 		return nil, err
 	}
 
-	e.lock.Lock()
-	defer e.lock.Unlock()
+	e.lock.RLock()
+	defer e.lock.RUnlock()
 
 	var connections []net.Conn
 	for i := 0; i < n; i++ {
 		conn := e.connections[int(events[i].Fd)]
 		connections = append(connections, conn)
 	}
-
 	return connections, nil
 }
 

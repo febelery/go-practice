@@ -1,18 +1,26 @@
 package main
 
 import (
-	"bufio"
+	"github.com/rcrowley/go-metrics"
+	"io"
 	"learn/tcp_server/common"
 	"log"
 	"net"
 	"net/http"
-	"strings"
+	"os"
+	"time"
+)
+
+var (
+	opsRate = metrics.NewRegisteredMeter("ops", nil)
 )
 
 var epoller *common.Epoll
 
 func main() {
 	common.SetLimit()
+
+	go metrics.Log(metrics.DefaultRegistry, 5*time.Second, log.New(os.Stderr, "metrics: ", log.Lmicroseconds))
 
 	ln, err := net.Listen("tcp", ":8972")
 	if err != nil {
@@ -45,18 +53,17 @@ func main() {
 		}
 
 		if err := epoller.Add(conn); err != nil {
-			log.Printf("failed to add connection %v \n", err)
+			log.Printf("failed to add connection %v", err)
 			conn.Close()
 		}
 	}
 }
 
 func start() {
-	var buf = make([]byte, 8)
 	for {
 		connections, err := epoller.Wait()
 		if err != nil {
-			log.Printf("failed to epoll wait %v \n", err)
+			log.Printf("failed to epoll wait %v", err)
 			continue
 		}
 
@@ -64,18 +71,17 @@ func start() {
 			if conn == nil {
 				break
 			}
-			if _, err := conn.Read(buf); err != nil {
+
+			// 将消息(时间戳)原封不动的写回
+			_, err = io.CopyN(conn, conn, 8)
+			if err != nil {
 				if err := epoller.Remove(conn); err != nil {
-					log.Printf("failed to remove %v \n", err)
+					log.Printf("failed to remove %v", err)
 				}
 				conn.Close()
 			}
 
-			reader := bufio.NewReader(conn)
-			line, _ := reader.ReadBytes('\n')
-			if len(line) > 0 {
-				log.Printf("simple epoll server recieve data: %s \n", strings.TrimSpace(string(line)))
-			}
+			opsRate.Mark(1)
 		}
 	}
 }
