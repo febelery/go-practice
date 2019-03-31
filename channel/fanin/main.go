@@ -17,6 +17,7 @@ func fanIn(chans ...<-chan interface{}) <-chan interface{} {
 				for v := range c {
 					out <- v
 				}
+				wg.Done()
 			}(c)
 		}
 
