@@ -38,6 +38,7 @@ func reduce(in <-chan interface{}, fn func(r, v interface{}) interface{}) interf
 func asStream(done <-chan struct{}) <-chan interface{} {
 	s := make(chan interface{})
 	values := []int{1, 2, 3, 4, 5}
+
 	go func() {
 		defer close(s)
 
@@ -50,6 +51,7 @@ func asStream(done <-chan struct{}) <-chan interface{} {
 		}
 
 	}()
+
 	return s
 }
 
