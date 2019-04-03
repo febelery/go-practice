@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"flag"
 	"github.com/gorilla/securecookie"
+	"log"
 	"net/http"
 )
 
@@ -88,4 +89,9 @@ func setSecureCookie(w http.ResponseWriter, r *http.Request) {
 		http.SetCookie(w, &cookie)
 		w.Write([]byte("set secure cookie succeed"))
 	}
+
+	// decode
+	decode := make(map[string]string)
+	s.Decode("cookie-name", encoded, &decode)
+	log.Println(decode)
 }
