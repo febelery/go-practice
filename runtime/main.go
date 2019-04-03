@@ -2,10 +2,13 @@ package main
 
 import (
 	"fmt"
+	"os"
+	"os/signal"
 	"runtime"
 	"runtime/debug"
 	"strconv"
 	"strings"
+	"syscall"
 )
 
 func Foo() {
@@ -75,6 +78,17 @@ func GoID() int {
 		panic(fmt.Sprintf("cannot get goroutine id: %v", err))
 	}
 	return id
+}
+
+func setupSigusr1Trap() {
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, syscall.SIGUSR1)
+
+	go func() {
+		for range c {
+			DumpStacks()
+		}
+	}()
 }
 
 func main() {
