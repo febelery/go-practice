@@ -10,36 +10,7 @@ import (
 	"os/exec"
 )
 
-func main() {
-	var stdout, stderr []byte
-	var errStdout, errStderr error
-
-	cmd := exec.Command("dstat")
-	stdoutIn, _ := cmd.StdoutPipe()
-	stderrIn, _ := cmd.StderrPipe()
-	cmd.Start()
-
-	go func() {
-		stdout, errStdout = copyAndCapture(os.Stdout, stdoutIn)
-	}()
-
-	go func() {
-		stderr, errStderr = copyAndCapture(os.Stderr, stderrIn)
-	}()
-
-	err := cmd.Wait()
-	if err != nil {
-		log.Fatalf("cmd.Run() failed with %s\n", err)
-	}
-
-	if errStdout != nil || errStderr != nil {
-		log.Fatalf("failed to capture stdout or stderr\n")
-	}
-
-	outStr, errStr := string(stdout), string(stderr)
-	fmt.Printf("\nout:\n%s\nerr:\n%s\n", outStr, errStr)
-}
-
+// io.Copy
 func copyAndCapture(w io.Writer, r io.Reader) ([]byte, error) {
 	var out []byte
 	buf := make([]byte, 1024, 1024)
@@ -64,4 +35,38 @@ func copyAndCapture(w io.Writer, r io.Reader) ([]byte, error) {
 	panic(true)
 
 	return nil, nil
+}
+
+func main() {
+	var stdout, stderr []byte
+	var errStdout, errStderr error
+
+	cmd := exec.Command("dstat")
+	stdoutIn, _ := cmd.StdoutPipe()
+	stderrIn, _ := cmd.StderrPipe()
+
+	err := cmd.Start()
+	if err != nil {
+		log.Fatalf("cmd.Start() failed with '%s'\n", err)
+	}
+
+	go func() {
+		stdout, errStdout = copyAndCapture(os.Stdout, stdoutIn)
+	}()
+
+	go func() {
+		stderr, errStderr = copyAndCapture(os.Stderr, stderrIn)
+	}()
+
+	err = cmd.Wait()
+	if err != nil {
+		log.Fatalf("cmd.Run() failed with %s\n", err)
+	}
+
+	if errStdout != nil || errStderr != nil {
+		log.Fatalf("failed to capture stdout or stderr\n")
+	}
+
+	outStr, errStr := string(stdout), string(stderr)
+	fmt.Printf("\nout:\n%s\nerr:\n%s\n", outStr, errStr)
 }

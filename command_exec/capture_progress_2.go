@@ -32,7 +32,7 @@ func NewCapturingPassThroughWriter(w io.Writer) *CapturingPassThroughWriter {
 func main() {
 	var errStdout, errStderr error
 
-	cmd := exec.Command("ls", "/home/ross/go", "-alh")
+	cmd := exec.Command("dstat")
 	stdoutIn, _ := cmd.StdoutPipe()
 	stderrIn, _ := cmd.StderrPipe()
 
@@ -47,6 +47,7 @@ func main() {
 	go func() {
 		_, errStdout = io.Copy(stdout, stdoutIn)
 	}()
+
 	go func() {
 		_, errStderr = io.Copy(stderr, stderrIn)
 	}()

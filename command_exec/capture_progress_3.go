@@ -13,7 +13,7 @@ func main() {
 	var stdoutBuf, stderrBuf bytes.Buffer
 	var errStdout, errStderr error
 
-	cmd := exec.Command("ls", "-lah")
+	cmd := exec.Command("dstat")
 	stdoutIn, _ := cmd.StdoutPipe()
 	stderrIn, _ := cmd.StderrPipe()
 

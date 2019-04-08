@@ -8,7 +8,7 @@ import (
 )
 
 func runAndExec() {
-	cmd := exec.Command("ls", "/home/ross/go", "-alh")
+	cmd := exec.Command("echo", "hello")
 	out, err := cmd.CombinedOutput()
 	if err != nil {
 		log.Fatalf("cmd.Run() failed with %s\n", err)
@@ -20,7 +20,7 @@ func runAndExec() {
 func captureStdoutStdErr() {
 	var stdout, stderr bytes.Buffer
 
-	cmd := exec.Command("ls", "/home/ross/go", "-alh")
+	cmd := exec.Command("echo", "hello")
 	cmd.Stdout = &stdout
 	cmd.Stderr = &stderr
 
