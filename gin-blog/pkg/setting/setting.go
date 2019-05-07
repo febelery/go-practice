@@ -1,8 +1,11 @@
 package setting
 
 import (
+	"fmt"
 	"github.com/go-ini/ini"
 	"log"
+	"os"
+	"strings"
 	"time"
 )
 
@@ -63,7 +66,16 @@ var cfg *ini.File
 
 func Setup() {
 	var err error
-	cfg, err = ini.Load("gin-blog/conf/app.ini")
+	var iniRoute string
+
+	baseDir, _ := os.Getwd()
+	if strings.Contains(baseDir, "gin-blog") {
+		iniRoute = fmt.Sprintf("%s/conf/app.ini", baseDir)
+	} else {
+		iniRoute = fmt.Sprintf("%s/gin-blog/conf/app.ini", baseDir)
+	}
+
+	cfg, err = ini.Load(iniRoute)
 	if err != nil {
 		log.Fatalf("setting.Setup, fail to parse 'conf/app.ini': %v", err)
 	}

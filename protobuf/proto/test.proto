@@ -1,0 +1,31 @@
+syntax = "proto3";
+package proto;
+
+enum EnumAllowingAlias {
+    option allow_alias = true;
+    UNKNOWN = 0;
+    STARTED = 1;
+    RUNNING = 1;
+}
+
+message UserInfo {
+    string message = 1;
+    int32 length = 2;
+    int32 cnt = 3;
+}
+
+// 保留标识符（Reserved）
+message Foo {
+    reserved 2, 9 to 11;
+    reserved "foo", "bar";
+
+    // Oneof字段就像可选字段， 除了它们会共享内存， 至多一个字段会被设置
+    oneof test_oneof {
+        string name = 1;
+        UserInfo userinfo = 3;
+    };
+
+    repeated sint32 width = 4;
+
+}
+
