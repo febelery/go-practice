@@ -1,4 +1,4 @@
-package rpcdemo
+package jsonrpc
 
 import "errors"
 

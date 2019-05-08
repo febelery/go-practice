@@ -1,7 +1,7 @@
 package main
 
 import (
-	"learn/rpc"
+	rpcdemo "learn/rpc/jsonrpc"
 	"log"
 	"net"
 	"net/rpc"
