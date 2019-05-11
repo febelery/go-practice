@@ -24,8 +24,7 @@ var (
 
 var port = flag.Int("port", 50051, "the port to serve on")
 
-type server struct {
-}
+type server struct{}
 
 func (s *server) UnaryEcho(ctx context.Context, req *featuresProto.EchoRequest) (*featuresProto.EchoResponse, error) {
 	return &featuresProto.EchoResponse{Message: req.Message}, nil
