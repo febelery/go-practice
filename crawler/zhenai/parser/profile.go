@@ -8,7 +8,7 @@ import (
 	"strconv"
 )
 
-var profileRe = regexp.MustCompile(`<div class="des f-cl" data-v-[^>]+>([^\|]{1,10}) \| ([\d]{1,3})岁 \| ([^\|]{1,10}) \| ([^\|]{1,10}) \| ([\d]{2,3})cm \| ([^<]{1,14})</div>`)
+var profileRe = regexp.MustCompile(`<div class="des interceptor-cl" data-v-[^>]+>([^\|]{1,10}) \| ([\d]{1,3})岁 \| ([^\|]{1,10}) \| ([^\|]{1,10}) \| ([\d]{2,3})cm \| ([^<]{1,14})</div>`)
 var infoRe = regexp.MustCompile(`<div class="m-btn pink" data-v-[^>]+>([^<]{1,20})</div>`)
 var idUrlRe = regexp.MustCompile(`http://album.zhenai.com/u/[\d]+`)
 var hokouRe = regexp.MustCompile(`<div class="m-btn pink" data-v-[^>]+>([^<]{1,20}族)</div>`)

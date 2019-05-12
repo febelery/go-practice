@@ -34,9 +34,9 @@ func writeFile(filename string) {
 	writer := bufio.NewWriter(file)
 	defer writer.Flush()
 
-	//f := fib.Fibonacci()
+	//interceptor := fib.Fibonacci()
 	//for i := 0; i < 20; i++ {
-	//	fmt.Fprintln(writer, f())
+	//	fmt.Fprintln(writer, interceptor())
 	//}
 }
 
